@@ -38,4 +38,8 @@ public class OrderController {
     public ResponseDTO cancelOrder(@PathVariable("order_id") Integer id) {
         return orderService.cancelOrder(id);
     }
+
+//    @GetMapping("/orders/status")
+//    @ResponseStatus(HttpStatus.OK)
+//    public
 }
