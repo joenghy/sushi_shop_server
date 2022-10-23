@@ -1,5 +1,6 @@
 package com.livebarn.sushishop.service;
 
+import com.livebarn.sushishop.dto.OrderResponseDTO;
 import com.livebarn.sushishop.model.Order;
 import com.livebarn.sushishop.model.Sushi;
 import com.livebarn.sushishop.repository.OrderRepository;
@@ -28,12 +29,22 @@ public class OrderService {
         return orders;
     }
 
-    public void placeOrder(Sushi sushi) {
+    public OrderResponseDTO placeOrder(Sushi sushi) {
+        OrderResponseDTO dto = new OrderResponseDTO();
         Order order = new Order();
-        Integer sushi_id = sushiRepository.findIdByName(sushi.getName());
-        order.setSushi_id(sushi_id);
-        order.setStatus_id(1);
-        orderRepository.save(order);
+        try {
+            order.setSushiId(sushiRepository.findIdByName(sushi.getName()));
+            order.setStatusId(currentOrders.size() < 3 ? 1 : 4);
+            Order savedOrder = orderRepository.save(order);
+            dto.setOrder(savedOrder);
+            dto.setCode(0);
+            dto.setMsg("Order created");
+        } catch (Exception e) {
+            dto.setOrder(order);
+            dto.setCode(-1);
+            dto.setMsg("Order failed");
+        }
+        return dto;
     }
 
     // check if any order finished

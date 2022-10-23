@@ -16,8 +16,8 @@ public class Order {
         strategy = GenerationType.IDENTITY
     )
     private Integer id;
-    private Integer status_id;
-    private Integer sushi_id;
+    private Integer statusId;
+    private Integer sushiId;
     @CreationTimestamp
     private Timestamp createdAt;
 }
