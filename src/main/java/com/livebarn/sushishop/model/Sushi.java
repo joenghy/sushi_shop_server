@@ -1,11 +1,12 @@
 package com.livebarn.sushishop.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
 
-//@Data
-//@Entity
+@Data
+@Entity
 @Table
 public class Sushi {
     @Id
@@ -13,6 +14,7 @@ public class Sushi {
         strategy = GenerationType.IDENTITY
     )
     private Integer id;
+    @JsonProperty("sushi_name")
     private String name;
     private Integer time_to_make;
 }
