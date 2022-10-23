@@ -1,6 +1,7 @@
 package com.livebarn.sushishop.service;
 
 import com.livebarn.sushishop.dto.OrderResponseDTO;
+import com.livebarn.sushishop.dto.ResponseDTO;
 import com.livebarn.sushishop.model.Order;
 import com.livebarn.sushishop.model.Sushi;
 import com.livebarn.sushishop.repository.OrderRepository;
@@ -43,6 +44,19 @@ public class OrderService {
             dto.setOrder(order);
             dto.setCode(-1);
             dto.setMsg("Order failed");
+        }
+        return dto;
+    }
+
+    public ResponseDTO cancelOrder(Integer id) {
+        ResponseDTO dto = new ResponseDTO();
+        try {
+            orderRepository.setStatusById(id, 5);
+            dto.setCode(0);
+            dto.setMsg("Order cancelled");
+        } catch (Exception e) {
+            dto.setCode(-1);
+            dto.setMsg("Order cancel failed");
         }
         return dto;
     }
