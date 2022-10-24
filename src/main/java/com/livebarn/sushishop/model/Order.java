@@ -18,4 +18,13 @@ public class Order {
     private Integer sushiId;
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public Order() {
+
+    }
+
+    public Order(Integer statusId, Integer sushiId) {
+        this.statusId = statusId;
+        this.sushiId = sushiId;
+    }
 }
