@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SushiRepository extends JpaRepository<Sushi, Integer> {
     @Query(value = "select id from sushi s where s.name = ?1", nativeQuery = true)
-    public Integer findIdByName(String name);
+    Integer findIdByName(String name);
 
     @Query(value = "select time_to_make from sushi s where s.name = ?1", nativeQuery = true)
-    public Integer findTTMByName(String name);
+    Integer findTTMByName(String name);
 }
