@@ -1,7 +1,9 @@
 package com.livebarn.sushishop.service;
 
 import com.livebarn.sushishop.dto.OrderResponseDTO;
+import com.livebarn.sushishop.dto.OrderStatusDTO;
 import com.livebarn.sushishop.dto.ResponseDTO;
+import com.livebarn.sushishop.dto.StatusResponseDTO;
 import com.livebarn.sushishop.model.Order;
 import com.livebarn.sushishop.model.OrderInPlace;
 import com.livebarn.sushishop.model.Sushi;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderService {
@@ -43,12 +47,13 @@ public class OrderService {
         Order order = new Order();
         try {
 //            Integer chefsAvailable = 3 - Math.toIntExact(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(2)).count());
-            Integer statusId = chefsAvailable > 0 ? 2 : 1;
+//            Integer statusId = chefsAvailable > 0 ? 2 : 1;
             order.setSushiId(sushiRepository.findIdByName(sushi.getName()));
-            order.setStatusId(statusId);
+            order.setStatusId(1);
             Order savedOrder = orderRepository.save(order);
-            OrderInPlace orderInPlace = new OrderInPlace(savedOrder.getId(), sushiRepository.findTTMByName(sushi.getName()), statusId);
+            OrderInPlace orderInPlace = new OrderInPlace(savedOrder.getId(), sushiRepository.findTTMByName(sushi.getName()), 1);
             orders.put(savedOrder.getId(), orderInPlace);
+            System.out.println(orders);
             dto.setOrder(savedOrder);
             dto.setCode(0);
             dto.setMsg("Order created");
@@ -63,12 +68,39 @@ public class OrderService {
     public ResponseDTO cancelOrder(Integer id) {
         ResponseDTO dto = new ResponseDTO();
         try {
+            OrderInPlace orderInPlace = orders.get(id);
+            if (orderInPlace.getStatusId().equals(4)) {
+                throw new Exception("Order is already finished.");
+            } else if (orderInPlace.getStatusId().equals(5)) {
+                throw new Exception("Order is already canelled.");
+            }
+            orderInPlace.setStatusId(5);
+            orders.put(id, orderInPlace);
             orderRepository.setStatusById(id, 5);
             dto.setCode(0);
-            dto.setMsg("Order cancelled");
+            dto.setMsg("Order cancelled.");
         } catch (Exception e) {
             dto.setCode(-1);
-            dto.setMsg("Order cancel failed");
+            dto.setMsg("Order cancel failed. " + e.getMessage());
+        }
+        return dto;
+    }
+
+    public StatusResponseDTO getOrderStatus() {
+        StatusResponseDTO dto = new StatusResponseDTO();
+        try {
+            dto.setInProgress(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(2)).map(Map.Entry::getValue).map(OrderInPlace::getOrderStatus).collect(Collectors.toList()));
+            dto.setCreated(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(1)).map(Map.Entry::getValue).map(OrderInPlace::getOrderStatus).collect(Collectors.toList()));
+            dto.setPaused(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(3)).map(Map.Entry::getValue).map(OrderInPlace::getOrderStatus).collect(Collectors.toList()));
+            dto.setCancelled(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(5)).map(Map.Entry::getValue).map(OrderInPlace::getOrderStatus).collect(Collectors.toList()));
+            dto.setCompleted(orders.entrySet().stream().filter(i -> i.getValue().getStatusId().equals(4)).map(Map.Entry::getValue).map(OrderInPlace::getOrderStatus).collect(Collectors.toList()));
+
+            // maybe needed?? should be required but not found in sample Response
+            dto.setCode(0);
+            dto.setMsg("Order in progress: " + dto.getInProgress().size() + " Order created: " + dto.getCreated().size() + " Order paused: " + dto.getPaused().size() + " Order cancelled: " + dto.getCancelled().size() + " Order completed: " + dto.getCompleted().size());
+        } catch (Exception e) {
+            dto.setCode(-1);
+            dto.setMsg("Get order status failed. " + e.getMessage());
         }
         return dto;
     }
@@ -83,7 +115,13 @@ public class OrderService {
         pendingOrders = orderRepository.getPendingOrders(Math.max(3 - currentOrders.size(), 0));
         System.out.println("pending " + pendingOrders);
         pendingOrders.forEach(id -> orderRepository.setStatusById(id, 2));*/
-        orders.forEach((key, value) -> chefsAvailable += value.updateStatus(chefsAvailable));
+        orders.forEach((key, value) -> {
+            Integer update = value.updateStatus(chefsAvailable);
+            if (update != 0) {
+                orderRepository.setStatusById(value.getOrderId(), value.getStatusId());
+                chefsAvailable += update;
+            }
+        });
         System.out.println(orders);
         System.out.println(chefsAvailable);
         i++;

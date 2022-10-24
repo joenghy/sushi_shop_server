@@ -2,6 +2,7 @@ package com.livebarn.sushishop.controller;
 
 import com.livebarn.sushishop.dto.OrderResponseDTO;
 import com.livebarn.sushishop.dto.ResponseDTO;
+import com.livebarn.sushishop.dto.StatusResponseDTO;
 import com.livebarn.sushishop.model.Order;
 import com.livebarn.sushishop.model.Sushi;
 import com.livebarn.sushishop.service.OrderService;
@@ -35,11 +36,13 @@ public class OrderController {
 
     @DeleteMapping(path = "/orders/{order_id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO cancelOrder(@PathVariable("order_id") Integer id) {
+    private ResponseDTO cancelOrder(@PathVariable("order_id") Integer id) {
         return orderService.cancelOrder(id);
     }
 
-//    @GetMapping("/orders/status")
-//    @ResponseStatus(HttpStatus.OK)
-//    public
+    @GetMapping("/orders/status")
+    @ResponseStatus(HttpStatus.OK)
+    private StatusResponseDTO getOrderStatus() {
+        return orderService.getOrderStatus();
+    }
 }

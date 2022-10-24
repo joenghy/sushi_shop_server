@@ -1,5 +1,6 @@
 package com.livebarn.sushishop.model;
 
+import com.livebarn.sushishop.dto.OrderStatusDTO;
 import lombok.Data;
 
 @Data
@@ -27,5 +28,12 @@ public class OrderInPlace {
             return -1;
         }
         return 0;
+    }
+
+    public OrderStatusDTO getOrderStatus() {
+        OrderStatusDTO orderStatusDTO = new OrderStatusDTO();
+        orderStatusDTO.setOrderId(this.orderId);
+        orderStatusDTO.setTimeSpent(this.timeSpent);
+        return orderStatusDTO;
     }
 }
