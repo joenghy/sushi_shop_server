@@ -1,5 +1,6 @@
 package com.livebarn.sushishop.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
@@ -13,9 +14,13 @@ public class Order {
     @GeneratedValue(
         strategy = GenerationType.IDENTITY
     )
+    @ApiModelProperty(example = "10")
     private Integer id;
+    @ApiModelProperty(example = "1")
     private Integer statusId;
+    @ApiModelProperty(example = "1")
     private Integer sushiId;
+    @ApiModelProperty(dataType = "date-time", example = "1582643059540")
     @CreationTimestamp
     private Timestamp createdAt;
 
