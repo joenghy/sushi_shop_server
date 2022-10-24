@@ -61,7 +61,11 @@ To get a local copy up and running follow these simple example steps.
    ```sh
    git clone https://github.com/joenghy/sushi_shop_server.git
    ```
-2. Run Spring Boot App
+2. Change directory
+   ```sh
+   cd sushi_shop_server
+   ```
+3. Run Spring Boot App
    ```sh
    mvn spring-boot:run
    ```
