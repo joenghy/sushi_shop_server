@@ -45,4 +45,16 @@ public class OrderController {
     private StatusResponseDTO getOrderStatus() {
         return orderService.getOrderStatus();
     }
+
+    @PutMapping("/orders/{order_id}/pause")
+    @ResponseStatus(HttpStatus.OK)
+    private ResponseDTO pauseOrder(@PathVariable("order_id") Integer id) {
+        return orderService.pauseOrder(id);
+    }
+
+    @PutMapping("orders/{order_id}/resume")
+    @ResponseStatus(HttpStatus.OK)
+    private ResponseDTO resumeOrder(@PathVariable("order_id") Integer id) {
+        return orderService.resumeOrder(id);
+    }
 }

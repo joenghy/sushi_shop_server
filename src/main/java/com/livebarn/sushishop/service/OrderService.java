@@ -72,7 +72,7 @@ public class OrderService {
             if (orderInPlace.getStatusId().equals(4)) {
                 throw new Exception("Order is already finished.");
             } else if (orderInPlace.getStatusId().equals(5)) {
-                throw new Exception("Order is already canelled.");
+                throw new Exception("Order is already cancelled.");
             }
             orderInPlace.setStatusId(5);
             orders.put(id, orderInPlace);
@@ -99,8 +99,49 @@ public class OrderService {
             dto.setCode(0);
             dto.setMsg("Order in progress: " + dto.getInProgress().size() + " Order created: " + dto.getCreated().size() + " Order paused: " + dto.getPaused().size() + " Order cancelled: " + dto.getCancelled().size() + " Order completed: " + dto.getCompleted().size());
         } catch (Exception e) {
+            // maybe needed?? should be required but not found in sample Response
             dto.setCode(-1);
             dto.setMsg("Get order status failed. " + e.getMessage());
+        }
+        return dto;
+    }
+
+    public ResponseDTO pauseOrder(Integer id) {
+        ResponseDTO dto = new ResponseDTO();
+        try {
+            OrderInPlace orderInPlace = orders.get(id);
+            Integer statusId = orderInPlace.getStatusId();
+            if (!statusId.equals(2)) {
+                throw new Exception("Order is not in progress.");
+            }
+            orderInPlace.setStatusId(3);
+            orders.put(id, orderInPlace);
+            orderRepository.setStatusById(id, 3);
+            dto.setCode(0);
+            dto.setMsg("Order paused.");
+        } catch (Exception e) {
+            dto.setCode(-1);
+            dto.setMsg("Order pause failed. " + e.getMessage());
+        }
+        return dto;
+    }
+
+    public ResponseDTO resumeOrder(Integer id) {
+        ResponseDTO dto = new ResponseDTO();
+        try {
+            OrderInPlace orderInPlace = orders.get(id);
+            Integer statusId = orderInPlace.getStatusId();
+            if (!statusId.equals(3)) {
+                throw new Exception("Order is not paused.");
+            }
+            orderInPlace.setStatusId(1);
+            orders.put(id, orderInPlace);
+            orderRepository.setStatusById(id, 1);
+            dto.setCode(0);
+            dto.setMsg("Order resumed.");
+        } catch (Exception e) {
+            dto.setCode(-1);
+            dto.setMsg("Order resume failed. " + e.getMessage());
         }
         return dto;
     }
