@@ -38,7 +38,9 @@
 ### Built With
 
 * [![spring-boot][spring-boot]][spring-boot-url]
+* [![h2-database][h2-database]][h2-database-url]
 * [![maven][maven]][maven-url]
+* [![swagger][swagger]][swagger-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -86,7 +88,7 @@ The following APIs are supported:
 - PUT /api/orders/{order_id}/pause
 - PUT /api/orders/{order_id}/resume
 
-I am working towards a detailed documentation on the APIs. Please get back later.
+For API documentation, please browse to http://localhost:9000/swagger-ui/index.html when the server is up.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,7 +98,7 @@ I am working towards a detailed documentation on the APIs. Please get back later
 - [x] Implement mandatory APIs
 - [x] Implement bonus APIs
 - [x] Implement basic test cases
-- [ ] Add API documentation
+- [x] Add API documentation
 - [ ] Improve test coverage
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -109,5 +111,9 @@ I am working towards a detailed documentation on the APIs. Please get back later
 [leetcode-url]: https://leetcode.com/joe_ng_ca/
 [spring-boot]: https://img.shields.io/badge/spring-boot?style=for-the-badge&logo=spring-boot&logoColor=white
 [spring-boot-url]: https://spring.io/projects/spring-boot
-[maven]: https://img.shields.io/badge/maven-green?style=for-the-badge&colorB=555
+[maven]: https://img.shields.io/badge/maven-green?style=for-the-badge&logo=apache-maven&colorB=555
 [maven-url]: https://maven.apache.org
+[h2-database]: https://img.shields.io/badge/h2-database?style=for-the-badge&colorB=555
+[h2-database-url]: https://www.h2database.com/html/main.html
+[swagger]: https://img.shields.io/badge/swagger-ui?style=for-the-badge&logo=swagger&colorB=555
+[swagger-url]: https://swagger.io
