@@ -37,9 +37,6 @@ public class OrderService {
         OrderResponseDTO dto = new OrderResponseDTO();
         Order order = new Order();
         try {
-//            chefsAvailable = NUMBEROFCHEFS - Math.toIntExact(orders.entrySet().stream()
-//                    .filter(i -> i.getValue().getStatusId().equals(Status.IN_PROGRESS.getStatusId()))
-//                    .count());
             order.setSushiId(sushiRepository.findIdByName(sushi.getName()));
             order.setStatusId(Status.CREATED.getStatusId());
             // update database
@@ -61,9 +58,13 @@ public class OrderService {
         ResponseDTO dto = new ResponseDTO();
         try {
             OrderInPlace orderInPlace = orders.get(id);
+            if (orderInPlace == null) {
+                throw new Exception("Order does not exist.");
+            }
             if (orderInPlace.getStatusId().equals(Status.FINISHED.getStatusId())) {
                 throw new Exception("Order is already finished.");
-            } else if (orderInPlace.getStatusId().equals(Status.CANCELLED.getStatusId())) {
+            }
+            if (orderInPlace.getStatusId().equals(Status.CANCELLED.getStatusId())) {
                 throw new Exception("Order is already cancelled.");
             }
             orderInPlace.setStatusId(Status.CANCELLED.getStatusId());
@@ -113,7 +114,7 @@ public class OrderService {
             dto.setMsg("Order in progress: " + dto.getInProgress().size() + " Order created: " + dto.getCreated().size() + " Order paused: " + dto.getPaused().size() + " Order cancelled: " + dto.getCancelled().size() + " Order completed: " + dto.getCompleted().size());
         } catch (Exception e) {
             // maybe needed?? should be required but not found in sample Response
-            dto.setCode(-1);
+            dto.setCode(StatusCode.FAILURE.ordinal());
             dto.setMsg("Get order status failed. " + e.getMessage());
         }
         return dto;
@@ -123,6 +124,9 @@ public class OrderService {
         ResponseDTO dto = new ResponseDTO();
         try {
             OrderInPlace orderInPlace = orders.get(id);
+            if (orderInPlace == null) {
+                throw new Exception("Order does not exist.");
+            }
             Integer statusId = orderInPlace.getStatusId();
             if (!statusId.equals(Status.IN_PROGRESS.getStatusId())) {
                 throw new Exception("Order is not in progress.");
@@ -144,6 +148,9 @@ public class OrderService {
         ResponseDTO dto = new ResponseDTO();
         try {
             OrderInPlace orderInPlace = orders.get(id);
+            if (orderInPlace == null) {
+                throw new Exception("Order does not exist.");
+            }
             Integer statusId = orderInPlace.getStatusId();
             if (!statusId.equals(Status.PAUSED.getStatusId())) {
                 throw new Exception("Order is not paused.");
