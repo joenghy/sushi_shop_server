@@ -28,8 +28,8 @@ public class OrderService {
         FAILURE
     }
 
-    private static final Integer NumberOfChefs = 3;
-    private Integer chefsAvailable = NumberOfChefs;
+    private static final Integer NUMBEROFCHEFS = 3;
+    private Integer chefsAvailable = NUMBEROFCHEFS;
 
     private Map<Integer, OrderInPlace> orders = new HashMap<>();
 
@@ -37,9 +37,9 @@ public class OrderService {
         OrderResponseDTO dto = new OrderResponseDTO();
         Order order = new Order();
         try {
-            chefsAvailable = 3 - Math.toIntExact(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(2))
-                    .count());
+//            chefsAvailable = NUMBEROFCHEFS - Math.toIntExact(orders.entrySet().stream()
+//                    .filter(i -> i.getValue().getStatusId().equals(Status.IN_PROGRESS.getStatusId()))
+//                    .count());
             order.setSushiId(sushiRepository.findIdByName(sushi.getName()));
             order.setStatusId(Status.CREATED.getStatusId());
             // update database
@@ -83,27 +83,27 @@ public class OrderService {
         StatusResponseDTO dto = new StatusResponseDTO();
         try {
             dto.setInProgress(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(2))
+                    .filter(i -> i.getValue().getStatusId().equals(Status.IN_PROGRESS.getStatusId()))
                     .map(Map.Entry::getValue)
                     .map(OrderInPlace::getOrderStatus)
                     .collect(Collectors.toList()));
             dto.setCreated(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(1))
+                    .filter(i -> i.getValue().getStatusId().equals(Status.CREATED.getStatusId()))
                     .map(Map.Entry::getValue)
                     .map(OrderInPlace::getOrderStatus)
                     .collect(Collectors.toList()));
             dto.setPaused(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(3))
+                    .filter(i -> i.getValue().getStatusId().equals(Status.PAUSED.getStatusId()))
                     .map(Map.Entry::getValue)
                     .map(OrderInPlace::getOrderStatus)
                     .collect(Collectors.toList()));
             dto.setCancelled(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(5))
+                    .filter(i -> i.getValue().getStatusId().equals(Status.CANCELLED.getStatusId()))
                     .map(Map.Entry::getValue)
                     .map(OrderInPlace::getOrderStatus)
                     .collect(Collectors.toList()));
             dto.setCompleted(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(4))
+                    .filter(i -> i.getValue().getStatusId().equals(Status.FINISHED.getStatusId()))
                     .map(Map.Entry::getValue)
                     .map(OrderInPlace::getOrderStatus)
                     .collect(Collectors.toList()));
@@ -164,8 +164,8 @@ public class OrderService {
     @Scheduled(fixedRate = 1000)
     public void updateOrderStatus() {
         try {
-            chefsAvailable = 3 - Math.toIntExact(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(2))
+            chefsAvailable = NUMBEROFCHEFS - Math.toIntExact(orders.entrySet().stream()
+                    .filter(i -> i.getValue().getStatusId().equals(Status.IN_PROGRESS.getStatusId()))
                     .count());
             orders.forEach((key, value) -> {
                 Integer update = value.updateStatus(chefsAvailable);
