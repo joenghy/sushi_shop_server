@@ -26,7 +26,8 @@ public class SushishopApplication {
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.livebarn.sushishop.controller"))
 				.paths(PathSelectors.any())
-				.build();
+				.build()
+				.apiInfo(apiInfo());
 	}
 
 	private ApiInfo apiInfo() {
