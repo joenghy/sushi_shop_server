@@ -79,7 +79,7 @@ To get a local copy up and running follow these simple example steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-You may use tools like Postman or curl to test the REST APIs. Please not that the server is started on port 9000.
+You may use tools like Postman or curl to test the REST APIs. Please note that the server is started on port 9000.
 The following APIs are supported:
 
 - POST /api/orders
