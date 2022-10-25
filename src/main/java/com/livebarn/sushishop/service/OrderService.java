@@ -1,6 +1,7 @@
 package com.livebarn.sushishop.service;
 
 import com.livebarn.sushishop.dto.OrderResponseDTO;
+import com.livebarn.sushishop.dto.OrderStatusDTO;
 import com.livebarn.sushishop.dto.ResponseDTO;
 import com.livebarn.sushishop.dto.StatusResponseDTO;
 import com.livebarn.sushishop.model.Order;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -80,34 +82,22 @@ public class OrderService {
         return dto;
     }
 
+    private List<OrderStatusDTO> getOrderCollection(Integer statusId) {
+        return orders.entrySet().stream()
+                .filter(i -> i.getValue().getStatusId().equals(statusId))
+                .map(Map.Entry::getValue)
+                .map(OrderInPlace::getOrderStatus)
+                .collect(Collectors.toList());
+    }
+
     public StatusResponseDTO getOrderStatus() {
         StatusResponseDTO dto = new StatusResponseDTO();
         try {
-            dto.setInProgress(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(Status.IN_PROGRESS.getStatusId()))
-                    .map(Map.Entry::getValue)
-                    .map(OrderInPlace::getOrderStatus)
-                    .collect(Collectors.toList()));
-            dto.setCreated(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(Status.CREATED.getStatusId()))
-                    .map(Map.Entry::getValue)
-                    .map(OrderInPlace::getOrderStatus)
-                    .collect(Collectors.toList()));
-            dto.setPaused(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(Status.PAUSED.getStatusId()))
-                    .map(Map.Entry::getValue)
-                    .map(OrderInPlace::getOrderStatus)
-                    .collect(Collectors.toList()));
-            dto.setCancelled(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(Status.CANCELLED.getStatusId()))
-                    .map(Map.Entry::getValue)
-                    .map(OrderInPlace::getOrderStatus)
-                    .collect(Collectors.toList()));
-            dto.setCompleted(orders.entrySet().stream()
-                    .filter(i -> i.getValue().getStatusId().equals(Status.FINISHED.getStatusId()))
-                    .map(Map.Entry::getValue)
-                    .map(OrderInPlace::getOrderStatus)
-                    .collect(Collectors.toList()));
+            dto.setInProgress(getOrderCollection(Status.IN_PROGRESS.getStatusId()));
+            dto.setCreated(getOrderCollection(Status.CREATED.getStatusId()));
+            dto.setPaused(getOrderCollection(Status.PAUSED.getStatusId()));
+            dto.setCancelled(getOrderCollection(Status.CANCELLED.getStatusId()));
+            dto.setCompleted(getOrderCollection(Status.FINISHED.getStatusId()));
 
             // maybe needed?? should be required but not found in sample Response
             dto.setCode(StatusCode.SUCCESS.ordinal());
