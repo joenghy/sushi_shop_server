@@ -39,6 +39,10 @@ public class OrderService {
         OrderResponseDTO dto = new OrderResponseDTO();
         Order order = new Order();
         try {
+            Integer sushiId = sushiRepository.findIdByName(sushi.getName());
+            if (sushiId == null) {
+                throw new Exception(sushi.getName() + " is not a valid menu item.");
+            }
             order.setSushiId(sushiRepository.findIdByName(sushi.getName()));
             order.setStatusId(Status.CREATED.getStatusId());
             // update database
@@ -61,13 +65,13 @@ public class OrderService {
         try {
             OrderInPlace orderInPlace = orders.get(id);
             if (orderInPlace == null) {
-                throw new Exception("Order does not exist.");
+                throw new Exception("Order " + id + " does not exist.");
             }
             if (orderInPlace.getStatusId().equals(Status.FINISHED.getStatusId())) {
-                throw new Exception("Order is already finished.");
+                throw new Exception("Order " + id + " is already finished.");
             }
             if (orderInPlace.getStatusId().equals(Status.CANCELLED.getStatusId())) {
-                throw new Exception("Order is already cancelled.");
+                throw new Exception("Order " + id + " is already cancelled.");
             }
             orderInPlace.setStatusId(Status.CANCELLED.getStatusId());
             orders.put(id, orderInPlace);
@@ -115,11 +119,11 @@ public class OrderService {
         try {
             OrderInPlace orderInPlace = orders.get(id);
             if (orderInPlace == null) {
-                throw new Exception("Order does not exist.");
+                throw new Exception("Order " + id + " does not exist.");
             }
             Integer statusId = orderInPlace.getStatusId();
             if (!statusId.equals(Status.IN_PROGRESS.getStatusId())) {
-                throw new Exception("Order is not in progress.");
+                throw new Exception("Order " + id + " is not in progress.");
             }
             orderInPlace.setStatusId(Status.PAUSED.getStatusId());
             orders.put(id, orderInPlace);
@@ -139,11 +143,11 @@ public class OrderService {
         try {
             OrderInPlace orderInPlace = orders.get(id);
             if (orderInPlace == null) {
-                throw new Exception("Order does not exist.");
+                throw new Exception("Order " + id + " does not exist.");
             }
             Integer statusId = orderInPlace.getStatusId();
             if (!statusId.equals(Status.PAUSED.getStatusId())) {
-                throw new Exception("Order is not paused.");
+                throw new Exception("Order " + id + " is not paused.");
             }
             orderInPlace.setStatusId(Status.CREATED.getStatusId());
             orders.put(id, orderInPlace);
